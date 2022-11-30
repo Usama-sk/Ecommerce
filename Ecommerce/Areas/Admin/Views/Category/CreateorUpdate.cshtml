@@ -1,0 +1,39 @@
+﻿@model DataModels.ViewModels.CategoryVM
+
+<form method="post" asp-action="CreateorUpdate">
+    <input type="hidden" asp-for="Category.CategoryId" class="form-control" />
+    <div class="border p-3 mt-4">
+        <div class="row pb-3">
+            <h2 class="text-primary">@((Model.Category == null || Model.Category.CategoryId == 0)? "Create Category" : "Update Category")</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="All"></div>
+        <div class="row mb-3">
+            <label asp-for="Category.Name">Name</label>
+            <input asp-for="Category.Name" class="form-control" />
+            <span asp-validation-for="Category.Name" class="text-danger"></span>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="Category.Description">Description</label>
+            <input asp-for="Category.Description" class="form-control" />
+            <span asp-validation-for="Category.Description" class="text-danger"></span>
+        </div>
+        @if (Model.Category == null || Model.Category.CategoryId == 0)
+        {
+            <button class="btn btn-primary" type="submit">Create</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" type="submit">Update</button>
+        }
+       
+        <a asp-action="Index" asp-controller="Category" class="btn btn-secondary">Back to list</a>
+    </div>
+    
+</form>
+
+@section scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    }
