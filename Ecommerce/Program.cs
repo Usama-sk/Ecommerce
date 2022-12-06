@@ -1,9 +1,9 @@
 
 using DataServiceLayer.DataContext;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Infrastructure.IRepository;
 using RepositoryLayer.Infrastructure.Repository;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +42,8 @@ app.UseStaticFiles();
 app.UseCors("AllowAll");
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication();
+app.MapRazorPages();
 
 app.UseAuthorization();
 
