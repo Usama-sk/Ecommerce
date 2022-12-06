@@ -1,6 +1,6 @@
 ﻿
 using DataModels;
-using DataServiceLayer.Context;
+using DataServiceLayer.DataContext;
 using RepositoryLayer.Infrastructure.IRepository;
 
 namespace RepositoryLayer.Infrastructure.Repository
