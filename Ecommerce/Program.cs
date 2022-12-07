@@ -1,6 +1,8 @@
 
+using CommonHelpers;
 using DataServiceLayer.DataContext;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Infrastructure.IRepository;
 using RepositoryLayer.Infrastructure.Repository;
@@ -23,9 +25,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnection"));
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<AppDbContext>();
-
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 

@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce", "Ecommerce\Ecommerce.csproj", "{05BDA77F-C750-47DD-9FB7-16614C6AF8D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce", "Ecommerce\Ecommerce.csproj", "{05BDA77F-C750-47DD-9FB7-16614C6AF8D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModels", "DataModels\DataModels.csproj", "{CC5C94AC-5DFD-4DB7-B073-11636E7B3360}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModels", "DataModels\DataModels.csproj", "{CC5C94AC-5DFD-4DB7-B073-11636E7B3360}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServiceLayer", "DataServiceLayer\DataServiceLayer.csproj", "{E3CA0240-2293-4950-9D3E-B017D16FB50E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataServiceLayer", "DataServiceLayer\DataServiceLayer.csproj", "{E3CA0240-2293-4950-9D3E-B017D16FB50E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryLayer", "RepositoryLayer\RepositoryLayer.csproj", "{58110C47-F975-43BF-82E9-216119215BF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryLayer", "RepositoryLayer\RepositoryLayer.csproj", "{58110C47-F975-43BF-82E9-216119215BF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonHelpers", "CommonHelpers\CommonHelpers.csproj", "{0B68FA70-2520-4468-BA69-0CEFAFA34B6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{58110C47-F975-43BF-82E9-216119215BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58110C47-F975-43BF-82E9-216119215BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58110C47-F975-43BF-82E9-216119215BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B68FA70-2520-4468-BA69-0CEFAFA34B6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B68FA70-2520-4468-BA69-0CEFAFA34B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B68FA70-2520-4468-BA69-0CEFAFA34B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B68FA70-2520-4468-BA69-0CEFAFA34B6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
