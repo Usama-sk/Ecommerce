@@ -2,8 +2,8 @@
 
 namespace RepositoryLayer.Infrastructure.IRepository
 {
-    public interface ICategoryRepository : IRepositroy<Category>
+    public interface ICartRepository : IRepositroy<Cart>
     {
-        void Update(Category category);
+        void Update(Cart cart);
     }
 }

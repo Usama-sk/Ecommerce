@@ -18,10 +18,25 @@ namespace Ecommerce.Areas.Customer.Controllers
             _unitofWork = unitofWork;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             IEnumerable<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category");
             return View(products);
+
+        }
+
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            Cart cart = new Cart()
+            {
+                Product = _unitofWork.Product.GetT(x => x.ProductId == id, includeProperties: "Category"),
+                Count = 1
+            };
+
+            return View(cart);
+
         }
 
 

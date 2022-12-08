@@ -16,6 +16,7 @@ namespace DataServiceLayer.DataContext
         public DbSet<Product>? Products { get; set; }
 
         public DbSet<AppUser>? AppUsers { get; set; }
+        public DbSet<Cart>? Carts { get; set; }
 
     }
 }
