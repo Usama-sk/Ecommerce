@@ -1,7 +1,9 @@
 ﻿using DataModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Infrastructure.IRepository;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Ecommerce.Areas.Customer.Controllers
 {
@@ -27,18 +29,37 @@ namespace Ecommerce.Areas.Customer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public IActionResult Details(int? ProductId)
         {
             Cart cart = new Cart()
             {
-                Product = _unitofWork.Product.GetT(x => x.ProductId == id, includeProperties: "Category"),
-                Count = 1
+                Product = _unitofWork.Product.GetT(x => x.ProductId == ProductId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = (int)ProductId
             };
 
             return View(cart);
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public IActionResult Details(Cart cart)
+        {
+            if (ModelState.IsValid)
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                cart.AppUserId = claims.Value;
+                _unitofWork.Cart.Add(cart);
+                _unitofWork.Save();
+
+            };
+
+            return RedirectToAction("Index");
+
+        }
 
         public IActionResult Privacy()
         {
