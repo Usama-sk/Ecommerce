@@ -45,6 +45,23 @@ namespace Ecommerce.Areas.Customer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
+        public IActionResult DeleteDetails(Cart cart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            cart.AppUserId = claims.Value;
+            var cartitem = _unitofWork.Cart.GetT(x => x.ProductId == cart.ProductId && x.AppUserId == claims.Value);
+
+            _unitofWork.Cart.Delete(cartitem);
+            _unitofWork.Save();
+
+            return RedirectToAction("Index");
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
         public IActionResult Details(Cart cart)
         {
             if (ModelState.IsValid)
@@ -52,8 +69,19 @@ namespace Ecommerce.Areas.Customer.Controllers
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 cart.AppUserId = claims.Value;
-                _unitofWork.Cart.Add(cart);
+                var cartitem = _unitofWork.Cart.GetT(x => x.ProductId == cart.ProductId && x.AppUserId == claims.Value);
+
+                if (cartitem == null)
+                {
+                    _unitofWork.Cart.Add(cart);
+                }
+                else
+                {
+                    _unitofWork.Cart.IncrementCartItem(cartitem, cart.Count);
+
+                }
                 _unitofWork.Save();
+
 
             };
 
