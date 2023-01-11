@@ -4,7 +4,7 @@ namespace RepositoryLayer.Infrastructure.IRepository
 {
     public interface IRepositroy<T> where T : class
     {
-        IEnumerable<T> GetAll(string? includeProperties = null);
+        IEnumerable<T> GetAll(Expression<Func<T, bool>>? predicate = null, string? includeProperties = null);
         T GetT(Expression<Func<T, bool>> predicate, string? includeProperties = null);
 
         void Add(T entity);
