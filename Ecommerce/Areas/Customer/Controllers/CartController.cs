@@ -37,5 +37,41 @@ namespace Ecommerce.Areas.Customer.Controllers
 
             return View(CartItemsList);
         }
+
+        public IActionResult Summary()
+        {
+            return View();
+        }
+            public IActionResult plus(int id)
+        {   
+            var cart = _unitofWork.Cart.GetT(x => x.CartId == id);
+            _unitofWork.Cart.IncrementCartItem(cart , 1);
+            _unitofWork.Save();
+            return RedirectToAction(nameof(Index));
+        }
+        public IActionResult minus(int id)
+        {
+            var cart = _unitofWork.Cart.GetT(x => x.CartId == id);
+            if(cart.Count <= 1)
+            {
+                _unitofWork.Cart.Delete(cart);
+            }
+            else
+            {
+                _unitofWork.Cart.DecrementCartItem(cart, 1);
+                
+            }
+            _unitofWork.Save();
+            return RedirectToAction(nameof(Index));
+        }
+        public IActionResult Delete(int id)
+        {
+          
+            var cart = _unitofWork.Cart.GetT(x => x.CartId == id);
+            _unitofWork.Cart.Delete(cart);
+            _unitofWork.Save();
+
+            return RedirectToAction(nameof (Index));
+        }
     }
 }

@@ -11,6 +11,11 @@ namespace RepositoryLayer.Infrastructure.Repository
         public IProductRepository Product { get; private set; }
         public ICartRepository Cart { get; private set; }
         public IAppUserRepository AppUser { get; private set; }
+
+        public IOrderHeaderRepository OrderHeader { get; private set; }
+
+        public IOrderDetailRepository OrderDetail { get; private set; }
+
         public UnitofWork(AppDbContext context)
         {
             _context = context;
@@ -18,6 +23,8 @@ namespace RepositoryLayer.Infrastructure.Repository
             Cart = new CartRepository(context);
             AppUser = new AppUserRepository(context);
             Product = new ProductRepository(context);
+            OrderHeader = new OrderHeaderRepository(context);
+            OrderDetail = new OrderDetailRepository(context);
         }
         public void Save()
         {
