@@ -14,6 +14,8 @@ namespace DataModels
         public int Id { get; set; }
         [ValidateNever]
         public string ApplicationUserId { get; set; }
+        [ValidateNever]
+        public AppUser ApplicationUser { get; set; }
         [Required]
         public DateTime DateofOrder { get; set; }
         public DateTime DateofShipping { get; set; }

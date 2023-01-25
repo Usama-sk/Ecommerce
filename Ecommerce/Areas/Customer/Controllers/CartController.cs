@@ -23,12 +23,14 @@ namespace Ecommerce.Areas.Customer.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-          
+
             CartItemsList = new CartVM
             {
-                Carts = _unitofWork.Cart.GetAll(x=>x.AppUserId == claims.Value,includeProperties:"Product")
+                Carts = _unitofWork.Cart.GetAll(x => x.AppUserId == claims.Value, includeProperties: "Product"),
+                OrderHeader = new OrderHeader()
               
             };
+            CartItemsList.OrderHeader.ApplicationUser = _unitofWork.AppUser.GetT(x => x.Id == claims.Value);
 
             foreach (var item in CartItemsList.Carts)
             {

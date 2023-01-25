@@ -12,7 +12,7 @@ namespace DataModels.ViewModels
         [ValidateNever]
         public IEnumerable<Cart> Carts { get; set; }
 
-        public double Total { get; set; }
+        public OrderHeader OrderHeader { get; set; }
 
     }
 }

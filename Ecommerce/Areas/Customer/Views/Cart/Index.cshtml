@@ -1,4 +1,5 @@
-﻿@model DataModels.ViewModels.CartVM
+﻿@using System.Globalization;
+@model DataModels.ViewModels.CartVM
 <section class="h-100" style="background-color: #eee;">
     <div class="container h-100 py-5">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -15,7 +16,7 @@
                     </div>
                 </div>
                 @foreach (var item in Model.Carts)
-                {
+                { 
                     <div class="card rounded-3 mb-4">
                         <div class="card-body p-4">
                             <div class="row d-flex justify-content-between align-items-center">
@@ -25,6 +26,8 @@
                                 </div>
                                 <div class="col-md-3 col-lg-3 col-xl-3">
                                     <p class="lead fw-normal mb-2">@item.Product.Name</p>
+                                    <p><span class="text-muted">Price per : </span>@item.Product.Price</p>
+
                                     <p><span class="text-muted">Description: </span>@Html.Raw(@item.Product.Description)</p>
                                 </div>
                                 <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
@@ -45,7 +48,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                    <h5 class="mb-0">Rs @item.Product.Price.00</h5>
+                                    <h5 class="mb-0">Rs @(item.Product.Price * item.Count).00</h5>
                                 </div>
                                 <div class="col-md-1 col-lg-1 col-xl-1 text-end" >
                                     <a  class="btn btn-outline-danger "
@@ -60,18 +63,23 @@
 
 
 
-                }
-             
+                    }
+
+
                 <div class="card mb-4">
                     <div class="card-body p-4 d-flex flex-row">
                         <div class="form-outline flex-fill">
-                            <input type="text" id="form1" class="form-control form-control-lg" />
-                            <label class="form-label" for="form1">Discound code</label>
+                            
+                            <label class="form-label " for="form1">Total Amount</label>
                         </div>
-                        <button type="button" class="btn btn-outline-warning btn-lg ms-3">Apply</button>
+                      <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                <h6 class="mb-0">
+                                @Model.Total.ToString("c",CultureInfo.CreateSpecificCulture("en-PK"))
+                                </h6>
+                        </div>
                     </div>
                 </div>
-
+                
                 <div class="card">
                     <div class="card-body">
                         <a asp-action="Summary" type="button" class="btn btn-warning btn-block btn-lg">Proceed to Pay</a>
