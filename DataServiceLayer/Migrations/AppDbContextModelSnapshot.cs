@@ -116,7 +116,7 @@ namespace DataServiceLayer.Migrations
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Carrier")
                         .HasColumnType("nvarchar(max)");
@@ -172,6 +172,8 @@ namespace DataServiceLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("OrderHeaders");
                 });
@@ -475,6 +477,17 @@ namespace DataServiceLayer.Migrations
                     b.Navigation("OrderHeader");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("DataModels.OrderHeader", b =>
+                {
+                    b.HasOne("DataModels.AppUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("DataModels.Product", b =>

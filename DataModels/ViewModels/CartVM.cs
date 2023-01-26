@@ -11,8 +11,8 @@ namespace DataModels.ViewModels
     {
         [ValidateNever]
         public IEnumerable<Cart> Carts { get; set; }
-
-        public OrderHeader OrderHeader { get; set; }
+        [ValidateNever]
+        public OrderHeader? OrderHeader { get; set; }
 
     }
 }

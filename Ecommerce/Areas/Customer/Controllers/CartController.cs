@@ -1,4 +1,5 @@
-﻿using DataModels;
+﻿using CommonHelpers;
+using DataModels;
 using DataModels.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace Ecommerce.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitofWork _unitofWork;
-        public CartVM CartItemsList { get; set; }
+        public CartVM vm { get; set; }
 
         public CartController(IUnitofWork unitofWork)
         {
@@ -24,27 +25,85 @@ namespace Ecommerce.Areas.Customer.Controllers
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            CartItemsList = new CartVM
+            vm = new CartVM
             {
                 Carts = _unitofWork.Cart.GetAll(x => x.AppUserId == claims.Value, includeProperties: "Product"),
                 OrderHeader = new OrderHeader()
               
             };
-            CartItemsList.OrderHeader.ApplicationUser = _unitofWork.AppUser.GetT(x => x.Id == claims.Value);
-
-            foreach (var item in CartItemsList.Carts)
+         
+            foreach (var item in vm.Carts)
             {
-                CartItemsList.Total += (item.Product.Price * item.Count); 
+                vm.OrderHeader.OrderTotal += (item.Product.Price * item.Count);
             }
 
-            return View(CartItemsList);
+            return View(vm);
         }
 
+        [HttpGet]
         public IActionResult Summary()
         {
-            return View();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            vm = new CartVM
+            {
+                Carts = _unitofWork.Cart.GetAll(x => x.AppUserId == claims.Value, includeProperties: "Product"),
+                OrderHeader = new OrderHeader()
+
+            };
+            vm.OrderHeader.ApplicationUser = _unitofWork.AppUser.GetT(x => x.Id == claims.Value);
+            vm.OrderHeader.Name = vm.OrderHeader.ApplicationUser.Name;
+            vm.OrderHeader.Phone = vm.OrderHeader.ApplicationUser.PhoneNumber;
+            vm.OrderHeader.Address = vm.OrderHeader.ApplicationUser.Address;
+            vm.OrderHeader.City = vm.OrderHeader.ApplicationUser.City;
+            vm.OrderHeader.State = vm.OrderHeader.ApplicationUser.State;
+            vm.OrderHeader.PostalCode = vm.OrderHeader.ApplicationUser.PinCode;
+
+            foreach (var item in vm.Carts)
+            {
+                vm.OrderHeader.OrderTotal += (item.Product.Price * item.Count);
+            }
+
+
+            return View(vm);
         }
-            public IActionResult plus(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Summary(CartVM vm)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+        
+            vm.Carts = _unitofWork.Cart.GetAll(x => x.AppUserId == claims.Value, includeProperties: "Product");
+            vm.OrderHeader.OrderStatus = OrderStatus.StatusPending;
+            vm.OrderHeader.PaymentStatus = PaymentStatus.StatusPending;
+            vm.OrderHeader.DateofPayment = DateTime.Now;
+            vm.OrderHeader.ApplicationUserId = claims.Value;
+            foreach (var item in vm.Carts)
+            {
+                vm.OrderHeader.OrderTotal += (item.Product.Price * item.Count);
+            }
+            _unitofWork.OrderHeader.Add(vm.OrderHeader);
+            _unitofWork.Save();
+            foreach (var item in vm.Carts)
+            {
+                OrderDetail orderDetail = new OrderDetail()
+                {
+                    ProductId = item.ProductId,
+                    OrderHeaderId = vm.OrderHeader.Id,
+                    Count = item.Count,
+                    Price = item.Product.Price
+
+                };
+                _unitofWork.OrderDetail.Add(orderDetail);
+                _unitofWork.Save();
+            }
+            _unitofWork.Cart.DeleteRange(vm.Carts);
+            _unitofWork.Save();
+            return RedirectToAction("Index","Home");
+        }
+        public IActionResult plus(int id)
         {   
             var cart = _unitofWork.Cart.GetT(x => x.CartId == id);
             _unitofWork.Cart.IncrementCartItem(cart , 1);
