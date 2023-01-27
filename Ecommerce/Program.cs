@@ -1,4 +1,5 @@
 
+
 using CommonHelpers;
 using DataServiceLayer.DataContext;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Infrastructure.IRepository;
 using RepositoryLayer.Infrastructure.Repository;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnection"));
 });
-
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("PaymentSettings"));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
@@ -51,6 +53,7 @@ app.UseStaticFiles();
 app.UseCors("AllowAll");
 
 app.UseRouting();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("PaymentSettings :SecretKey").Get<string>();
 app.UseAuthentication();
 app.MapRazorPages();
 

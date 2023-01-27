@@ -4,6 +4,7 @@ using DataModels.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Infrastructure.IRepository;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace Ecommerce.Areas.Customer.Controllers
@@ -99,9 +100,37 @@ namespace Ecommerce.Areas.Customer.Controllers
                 _unitofWork.OrderDetail.Add(orderDetail);
                 _unitofWork.Save();
             }
+             var options = new SessionCreateOptions
+      {
+        LineItems = new List<SessionLineItemOptions>
+        {
+          new SessionLineItemOptions
+          {
+            PriceData = new SessionLineItemPriceDataOptions
+            {
+              UnitAmount = 2000,
+              Currency = "usd",
+              ProductData = new SessionLineItemPriceDataProductDataOptions
+              {
+                Name = "T-shirt",
+              },
+            },
+            Quantity = 1,
+          },
+        },
+        Mode = "payment",
+        SuccessUrl = "http://localhost:4242/success",
+        CancelUrl = "http://localhost:4242/cancel",
+      };
+
+      var service = new SessionService();
+      Session session = service.Create(options);
+
+      Response.Headers.Add("Location", session.Url);
+      return new StatusCodeResult(303);
             _unitofWork.Cart.DeleteRange(vm.Carts);
             _unitofWork.Save();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index");
         }
         public IActionResult plus(int id)
         {   

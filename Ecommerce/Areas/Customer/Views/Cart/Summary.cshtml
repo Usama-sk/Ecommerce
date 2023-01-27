@@ -1,4 +1,6 @@
 ﻿@using System.Globalization
+@using Microsoft.Extensions.Options
+@inject IOptions<CommonHelpers.StripeSettings> Stripe
 <!-- Credit card form -->
 @model DataModels.ViewModels.CartVM
 <section>
