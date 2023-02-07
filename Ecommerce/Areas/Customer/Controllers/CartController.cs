@@ -100,37 +100,58 @@ namespace Ecommerce.Areas.Customer.Controllers
                 _unitofWork.OrderDetail.Add(orderDetail);
                 _unitofWork.Save();
             }
-             var options = new SessionCreateOptions
-      {
-        LineItems = new List<SessionLineItemOptions>
-        {
-          new SessionLineItemOptions
-          {
-            PriceData = new SessionLineItemPriceDataOptions
+            var domain = "https://localhost:44385/";
+            var options = new SessionCreateOptions
             {
-              UnitAmount = 2000,
-              Currency = "usd",
-              ProductData = new SessionLineItemPriceDataProductDataOptions
-              {
-                Name = "T-shirt",
-              },
-            },
-            Quantity = 1,
-          },
-        },
-        Mode = "payment",
-        SuccessUrl = "http://localhost:4242/success",
-        CancelUrl = "http://localhost:4242/cancel",
-      };
+            LineItems = new List<SessionLineItemOptions>(),
+            Mode = "payment",
+            SuccessUrl = domain+$"customer/cart/ordersuccess?id={vm.OrderHeader.Id}",
+            CancelUrl = domain + $"customer/cart/Index",
+            };
+            foreach (var item in vm.Carts)
+            {
 
-      var service = new SessionService();
-      Session session = service.Create(options);
+                var lineitemsOptions = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)item.Product.Price *100,
+                        Currency = "PKR",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Name,
+                        },
+                    },
+                    Quantity = item.Count,
+                };
+                options.LineItems.Add(lineitemsOptions);    
+            
 
-      Response.Headers.Add("Location", session.Url);
-      return new StatusCodeResult(303);
+            }
+
+            var  service = new SessionService();
+            Session session = service.Create(options);
+            _unitofWork.OrderHeader.PaymentStatus(vm.OrderHeader.Id, session.Id, session.PaymentIntentId);
+            _unitofWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
             _unitofWork.Cart.DeleteRange(vm.Carts);
             _unitofWork.Save();
             return RedirectToAction("Index");
+        }
+        public IActionResult ordersuccess(int id)
+        {
+            var orderHeader = _unitofWork.OrderHeader.GetT(x => x.Id == id);
+            var service = new SessionService();
+            Session session = service.Get(orderHeader.SessionId);
+            if(session.PaymentStatus.ToLower() == "paid")
+            {
+                _unitofWork.OrderHeader.UpdateStatus(id, OrderStatus.StatusApproved, PaymentStatus.StatusApproved);
+            }
+            List<Cart> cart = _unitofWork.Cart.GetAll(x=>x.AppUserId == orderHeader.ApplicationUserId).ToList();
+            _unitofWork.Cart.DeleteRange(cart);
+            _unitofWork.Save();
+            return View(id);
         }
         public IActionResult plus(int id)
         {   

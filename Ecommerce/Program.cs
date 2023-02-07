@@ -53,7 +53,8 @@ app.UseStaticFiles();
 app.UseCors("AllowAll");
 
 app.UseRouting();
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("PaymentSettings :SecretKey").Get<string>();
+var key = builder.Configuration.GetSection("PaymentSettings:SecretKey").Get<string>();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("PaymentSettings:SecretKey").Get<string>();
 app.UseAuthentication();
 app.MapRazorPages();
 

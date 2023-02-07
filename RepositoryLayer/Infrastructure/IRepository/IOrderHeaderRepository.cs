@@ -11,5 +11,8 @@ namespace RepositoryLayer.Infrastructure.IRepository
     {
         void Update(OrderHeader orderHeader);
         void UpdateStatus(int Id, string orderstatus,string? paymentStatus = null);
+
+        void PaymentStatus(int Id, string SessionId, string paymentIntentId);
+
     }
 }
